@@ -80,6 +80,12 @@ try {
 
   const filePath = `../out/${new Date().toLocaleDateString()}.log`;
 
+  try {
+    await fs.access('../out');
+  } catch (err) {
+    await fs.mkdir('../out');
+  }
+
   await fs.writeFile(filePath, text.join('\r\n'));
 
   console.log(`Результаты доступны в ${filePath.replace('../', '')}`);
