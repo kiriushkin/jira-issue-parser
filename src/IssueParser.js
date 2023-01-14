@@ -42,6 +42,8 @@ class IssueParser {
   async makeQuery(text, query, weight, targetHours) {
     const resp = await this.jira.searchJira(query, {
       maxResults: 1000,
+      fields: ['created'],
+      expand: ['changelog'],
     });
 
     this.text.push(`${text}: ${resp.total}`);
@@ -50,7 +52,7 @@ class IssueParser {
 
     if (score) this.text.push(`  Баллов: ${score}`);
 
-    const hours = await this.calculateHours(resp.issues);
+    const hours = this.calculateHours(resp.issues);
 
     this.text.push(`  Средние часы: ${Math.round(hours * 100) / 100}`);
 
@@ -68,19 +70,17 @@ class IssueParser {
     this.text.push('-'.repeat(25));
   }
 
-  async calculateHours(issues) {
+  calculateHours(issues) {
     try {
       const issueHours = [];
 
       for (const issue of issues) {
-        const resp = await this.jira.findIssue(issue.key, 'changelog');
-
         let spentHours = 0;
 
-        let fromDate = new Date(resp.fields.created);
+        let fromDate = new Date(issue.fields.created);
         let toDate;
 
-        for (const history of resp.changelog.histories) {
+        for (const history of issue.changelog.histories) {
           for (const item of history.items) {
             if (
               (item.field === 'status' && item.toString === 'Перевод') ||
