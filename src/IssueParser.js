@@ -82,6 +82,8 @@ class IssueParser {
 
         for (const history of issue.changelog.histories) {
           for (const item of history.items) {
+            if (item.field === 'Component' && item.toString === this.component)
+              fromDate = new Date(history.created);
             if (
               (item.field === 'status' && item.toString === 'Перевод') ||
               item.toString === 'Финальная проверка' ||
