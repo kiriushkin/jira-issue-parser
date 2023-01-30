@@ -82,8 +82,8 @@ class IssueParser {
 
         for (const history of issue.changelog.histories) {
           for (const item of history.items) {
-            if (item.field === 'Component' && item.toString === this.component)
-              fromDate = new Date(history.created);
+            // if (item.field === 'Component' && item.toString === this.component)
+            //   fromDate = new Date(history.created);
             if (
               (item.field === 'status' && item.toString === 'Перевод') ||
               item.toString === 'Финальная проверка' ||
@@ -146,9 +146,11 @@ class IssueParser {
   }
 
   async writeOutput() {
-    const filePath = `../out/${new Date().toLocaleDateString()}-${
-      this.component
-    }-${isLimitHours ? 'limited' : ''}.log`;
+    const filePath = `../out/${new Date()
+      .toLocaleDateString()
+      .replace('/', '.')}-${this.component}-${
+      isLimitHours ? 'limited' : ''
+    }.log`;
 
     try {
       await fs.access('../out');
