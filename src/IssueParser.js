@@ -148,7 +148,7 @@ class IssueParser {
   async writeOutput() {
     const filePath = `../out/${new Date()
       .toLocaleDateString()
-      .replace('/', '.')}-${this.component}-${
+      .replace(/\//g, '.')}-${this.component}-${
       isLimitHours ? 'limited' : ''
     }.log`;
 
